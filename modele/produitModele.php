@@ -11,7 +11,9 @@
 
         public function createMateriel($designation, $marque, $modele, $prixachat, $iduser)
         {
-            $requete = "INSERT INTO materiel VALUES (null, :designation, :marque, :modele, :prixachat, NOW(), :iduser);";
+            $requete = "INSERT INTO materiel (designation, marque, modele, prixachat, date_achat, idUser) 
+            VALUES (:designation, :marque, :modele, :prixachat, NOW(), :iduser)";
+
             $select = $this->bdd->prepare($requete);
             $select->bindParam(":designation", $designation);
             $select->bindParam(":marque", $marque);

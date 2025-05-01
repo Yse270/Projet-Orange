@@ -82,7 +82,8 @@
 				if ($lg >= 1)
 				{
 					$hashKey = $this->loginModele->getHash();
-					$mdp = sha1($mdp.$hashKey['cle']);
+					$passwordHashed = sha1($mdp . $hashKey);
+
 
 					
 					//appel au modele pour test les users

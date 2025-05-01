@@ -1,118 +1,67 @@
 <?php
 require_once("modele/interventionsModele.php");
 
+class interventionControleur
+{
+    private $interventionModele;
 
-
-
-    $interventionControleur = new interventionControleur();
-    $formIntervention = null;
-    $lesMateriaux = null;
-
-
-    //préparer la liste des materiaux
-    $lesMateriaux = $interventionControleur->selectClientMaterials($_SESSION[('idUser')]);
-
-
-    //afficher la liste des matériaux en fonction du filtre ou non
-
-    if(isset($_POST["filtrerIntervention"]) && $_POST['filtre'] != "") 
+    public function __construct()
     {
-        $lesInterventions = $interventionControleur->searchIntervention($_POST['filtre']);
-    }else if ($_SESSION['userType'] == "client")
-    {
-        $lesInterventions = $interventionControleur->selectClientIntervention($_SESSION['idUser']);
-    }else if ($_SESSION['userType'] == 'technicien')
-    {
-        $lesInterventions = $interventionControleur->selectTechnicienIntervention($_SESSION['idUser']);
+        $this->interventionModele = new interventionsModele();
     }
 
-    //gérer la modification et la supression d'interventions
-    if(isset($_GET['action']) && isset ($_GET['idIntervention']))
+    // 🔧 CRUD Interventions
+
+    public function createInterventions($dateInter, $duree, $statut, $description, $idMateriel)
     {
-        $action = $_GET['action'];
-        $idIntervention = $_GET['idIntervention'];
-        switch ($action){
-            case "supprimer" : $interventionControleur->deleteIntervention($idIntervention); echo '<script>window.location.href="index.php?page=2"</script>'; break;
-            case "modifier" : $formIntervention = $interventionControleur->selectWhereIntervention($idIntervention); break;
-        } 
+        $this->interventionModele->createInterventions($dateInter, $duree, $statut, $description, $idMateriel);
     }
 
-
-
-
-    // créer un matériel suite au formulaire 
-
-    if (isset($_POST["createIntervention"])) 
+    public function updateInterventions($dateInter, $duree, $statut, $description, $idMateriel, $idIntervention)
     {
-        var_dump($_POST);
-        $interventionControleur->createInterventions($_POST['dateInter'], $_POST['duree'], $_POST['statut'], $_POST['description'], $_POST['idMateriel']);
-        echo '<script>window.location.href="index.php?page=2"</script>';
+        $this->interventionModele->updateInterventions($dateInter, $duree, $statut, $description, $idMateriel, $idIntervention);
     }
 
-    if (isset($_POST['modifyIntervention']))
+    public function deleteIntervention($idIntervention)
     {
-        $interventionControleur->updateInterventions($_POST['dateInter'], $_POST['duree'], $_POST['statut'], $_POST['description'], $_POST['idMateriel'], $idIntervention);
-        echo '<script>window.location.href="index.php?page=2"</script>';
+        $this->interventionModele->deleteIntervention($idIntervention);
     }
 
-
-
-
-
-
-
-    class interventionControleur
+    public function selectWhereIntervention($idIntervention)
     {
-        private $interventionModele;
+        return $this->interventionModele->selectWhereIntervention($idIntervention);
+    }
 
-        public function __construct()
-        {
-            $this->interventionModele = new interventionsModele();
-        }
+    public function searchIntervention($mot)
+    {
+        return $this->interventionModele->searchIntervention($mot);
+    }
 
-        public function createInterventions($dateInter, $duree, $statut, $description, $idMateriel)
-        {
-            $this->interventionModele->createInterventions($dateInter, $duree, $statut, $description, $idMateriel);
-        }
+    // 📋 Liste des interventions par rôle
 
-        public function updateInterventions($dateInter, $duree, $statut, $description, $idMateriel, $idIntervention)
-        {
-            $this->interventionModele->updateInterventions($dateInter, $duree, $statut, $description, $idMateriel, $idIntervention);
-        }
+    public function selectClientIntervention($idUser)
+    {
+        return $this->interventionModele->selectClientIntervention($idUser);
+    }
 
-        public function selectClientIntervention($idUser)
-        {
-            return $this->interventionModele->selectClientIntervention($idUser);
-        }
+    public function selectTechnicienIntervention($idUser)
+    {
+        return $this->interventionModele->selectTechnicienIntervention($idUser);
+    }
 
-        public function selectTechnicienIntervention($idUser)
-        {
-            return $this->interventionModele->selectTechnicienIntervention($idUser);
-        }
+    // 🧱 Gestion des matériels
 
+    public function selectClientMaterials($idClient)
+    {
+        return $this->interventionModele->selectClientMaterials($idClient);
+    }
 
-        public function searchIntervention($mot)
-        {
-            return $this->interventionModele->searchIntervention($mot);
-        }
+    public function createMateriel($nom, $idUser)
+    {
+        $this->interventionModele->createMateriel($nom, $idUser);
+    }
 
-        public function deleteIntervention($idIntervention)
-        {
-            //$this->interventionModele->removeForeignKeys($idIntervention);
-            $this->interventionModele->deleteIntervention($idIntervention);
-        }
-
-        public function selectWhereIntervention($idIntervention)
-        {
-            return $this->interventionModele->selectWhereIntervention($idIntervention);
-        }
-
-        public function selectClientMaterials($idClient)
-        {
-            return $this->interventionModele->selectClientMaterials($idClient);
-        }
-
-  
+    // 📄 Rapports
 
     public function createRapport($idTechnicien, $idIntervention, $rapport)
     {
@@ -123,10 +72,10 @@ require_once("modele/interventionsModele.php");
     {
         return $this->interventionModele->selectRapportsByTechnicien($idTechnicien);
     }
-    
 
-
-
+    public function deleteRapport($idRapport)
+    {
+        $this->interventionModele->deleteRapport($idRapport);
     }
-
+}
 ?>

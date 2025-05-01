@@ -31,9 +31,13 @@
         {
             case 0: require_once('vue/accueilVue.php');break;
             case 1: require_once('vue/produitsVue.php');break;
-            case 2: require_once('vue/interventionsVue.php');break;
+            case 2: 
+                
+                require_once('vue/interventionsVue.php');break;
             case 3: require_once('vue/parametresVue.php');break;
             case 4: require_once('deconnexion.php'); break;
+            case 5: require_once("vue/rapportsVue.php"); break;
+            
 
             default: require_once('vue/accueilVue.php'); break;
         }
